@@ -1,0 +1,113 @@
+.\" Copyright (c) 2017 Raymond S Brand
+.\" All rights reserved.
+.\" 
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 
+.\"  * Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 
+.\"  * Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in
+.\"    the documentation and/or other materials provided with the
+.\"    distribution.
+.\" 
+.\"  * Redistributions in source or binary form must carry prominent
+.\"    notices of any modifications.
+.\" 
+.\"  * Neither the name of the Raymond S Brand nor the names of its
+.\"    contributors may be used to endorse or promote products derived
+.\"    from this software without specific prior written permission.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+.\" "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+.\" LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+.\" FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+.\" COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+.\" INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+.\" BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+.\" LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+.\" CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+.\" ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+.\" POSSIBILITY OF SUCH DAMAGE.
+.TH EXTARR 3rsbx 2017-03-30 "RSBX" "RSBX Support Libraries"
+.SH NAME
+ExtArr_Addr, ExtArr_Create, ExtArr_Destroy \- extensible array abstraction
+.SH SYNOPSIS
+.nf
+.B #include """ExtArr.h"""
+.sp
+.BI "void *ExtArr_Addr(ExtArr_t " extarr ", ExtArr_index_t " index ");"
+.sp
+.BI "ExtArr_t ExtArr_Create(size_t " elementsize ","
+.in +5n
+.BI "unsigned short " l2block ","
+.BI "unsigned short " l2indirect ","
+.BI "int (*" mem_alloc ")(void *mem_data, size_t size, void **ptr),"
+.BI "int (*" mem_free ")(void *mem_data, size_t size, void *ptr),"
+.BI "void *" mem_data ");"
+.in
+.sp
+.BI "int ExtArr_Destroy(ExtArr_t " extarr ");"
+.fi
+.SH DESCRIPTION
+The
+.BR ExtArr_Addr ()
+function returns a pointer to the array element in extensible array
+.I extarr
+at the position specified by
+.IR index .
+Or NULL if
+.IR mem_alloc ()
+returned an error.
+
+The
+.BR ExtArr_Create ()
+function returns an extensible array with
+.I elementsize
+elements. Or NULL if
+.IR mem_alloc ()
+returned an error.
+.I l2block
+is the integer log base 2 of the number of elements to allocate as a block.
+.I l2indirect
+is the integer log base 2 of the number of indirect pointers to allocate at
+a time for the nodes of the tree used to find the element blocks.
+.IR mem_alloc "(), " mem_free "(), and " mem_data
+are used to allocate and release the memory required to implement the
+extensible array.
+
+The
+.BR ExtArr_Destroy ()
+function destroys and releases the memory used by the extensible array
+.IR extarr .
+Zero is returned on success and a non-zero value if
+.IR mem_free ()
+returned an error.
+
+
+.SH RETURN VALUE
+The
+.BR ExtArr_Addr ()
+function returns a pointer to the specified ellement or NULL if there was an
+error.
+
+The
+.BR ExtArr_Create ()
+function returns a new extensible array or NULL if there was an error.
+
+The
+.BR ExtArr_Destroy ()
+function returns zero if successful and nonzero if there was an error.
+
+
+.SH NOTES
+The calling code is responsible for insuring all alignment requirements are
+met.
+
+Logically adjacent extensible array elements may not be adjacent in memory.
+
+Argument validation is not performed. The calling code is responsible for
+providinng correct/sane argument values.

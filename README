@@ -1,0 +1,67 @@
+EXTARR(3rsbx)               RSBX Support Libraries               EXTARR(3rsbx)
+
+
+
+NAME
+       ExtArr_Addr,  ExtArr_Create, ExtArr_Destroy - extensible array abstrac‐
+       tion
+
+SYNOPSIS
+       #include "ExtArr.h"
+
+       void *ExtArr_Addr(ExtArr_t extarr, ExtArr_index_t index);
+
+       ExtArr_t ExtArr_Create(size_t elementsize,
+            unsigned short l2block,
+            unsigned short l2indirect,
+            int (*mem_alloc)(void *mem_data, size_t size, void **ptr),
+            int (*mem_free)(void *mem_data, size_t size, void *ptr),
+            void *mem_data);
+
+       int ExtArr_Destroy(ExtArr_t extarr);
+
+DESCRIPTION
+       The ExtArr_Addr() function returns a pointer to the  array  element  in
+       extensible array extarr at the position specified by index.  Or NULL if
+       mem_alloc() returned an error.
+
+       The ExtArr_Create() function returns an extensible array with  element‐
+       size  elements.  Or  NULL if mem_alloc() returned an error.  l2block is
+       the integer log base 2 of the number  of  elements  to  allocate  as  a
+       block.   l2indirect is the integer log base 2 of the number of indirect
+       pointers to allocate at a time for the nodes of the tree used  to  find
+       the  element blocks.  mem_alloc(), mem_free(), and mem_data are used to
+       allocate and release the memory required to  implement  the  extensible
+       array.
+
+       The  ExtArr_Destroy() function destroys and releases the memory used by
+       the extensible array extarr.  Zero is returned on success  and  a  non-
+       zero value if mem_free() returned an error.
+
+
+
+RETURN VALUE
+       The  ExtArr_Addr() function returns a pointer to the specified ellement
+       or NULL if there was an error.
+
+       The ExtArr_Create() function returns a new extensible array or NULL  if
+       there was an error.
+
+       The ExtArr_Destroy() function returns zero if successful and nonzero if
+       there was an error.
+
+
+
+NOTES
+       The calling code is responsible for insuring all alignment requirements
+       are met.
+
+       Logically  adjacent  extensible  array  elements may not be adjacent in
+       memory.
+
+       Argument validation is not performed. The calling code  is  responsible
+       for providinng correct/sane argument values.
+
+
+
+RSBX                              2017-03-30                     EXTARR(3rsbx)
